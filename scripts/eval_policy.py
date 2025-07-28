@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# 每16步，模型就会用数据集中的observation进行一次推理,而不是与环境交互得到obervation
 
 import warnings
 from dataclasses import dataclass, field
@@ -165,6 +166,7 @@ def main(args: ArgsConfig):
 
 
 if __name__ == "__main__":
+    # 从预录制的数据集中逐步提取状态和动作数据, 用数据中的observation每隔16次进行一次推理，不用在仿真环境交互
     # Parse arguments using tyro
     config = tyro.cli(ArgsConfig)
     main(config)

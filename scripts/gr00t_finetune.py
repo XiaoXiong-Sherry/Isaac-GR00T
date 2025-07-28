@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# export HUGGINGFACE_HUB_CACHE="/pfs/pfs-uaDOJM/home/xiongxiao/workspace/Isaac-GR00T/.cache/huggingface/hub/"
 
 import os
 import subprocess
@@ -41,7 +42,7 @@ class ArgsConfig:
     dataset_path: List[str]
     """Path to the dataset directory or directories"""
 
-    output_dir: str = "/tmp/gr00t"
+    output_dir: str = "tmp/gr00t" # /tmp/gr00t (从系统根目录开始) tmp/gr00t (从当前工作目录开始)
     """Directory to save model checkpoints."""
 
     data_config: Literal[tuple(DATA_CONFIG_MAP.keys())] = "fourier_gr1_arms_only"
@@ -65,10 +66,10 @@ class ArgsConfig:
     """Path or HuggingFace model ID for the base model."""
 
     tune_llm: bool = False
-    """Whether to fine-tune the language model backbone."""
+    """Whether to fine-tune the language model backbone.是否冻结语言模型参数"""
 
     tune_visual: bool = False
-    """Whether to fine-tune the vision tower."""
+    """Whether to fine-tune the vision tower.是否冻结视觉模型参数"""
 
     tune_projector: bool = True
     """Whether to fine-tune the projector."""
@@ -178,7 +179,7 @@ def main(config: ArgsConfig):
         print(f"Loaded {len(single_datasets)} datasets, with {config.dataset_path} ")
 
     # ------------ step 2: load model ------------
-    # First, get the data config to determine action horizon
+    # First, get the data config to determine action horizon 模型每次输出的动作序列包含多少个时间步
     data_action_horizon = len(data_config_cls.action_indices)
 
     # Load model

@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# 每16步，模型就会用数据集中的observation进行一次推理,而不是与环境交互得到obervation
 
 """
 GR00T Inference Service
@@ -147,8 +148,8 @@ def main(args: ArgsConfig):
         # construct your own modality config and transform
         # see gr00t/utils/data.py for more details
         data_config = DATA_CONFIG_MAP[args.data_config]
-        modality_config = data_config.modality_config()
-        modality_transform = data_config.transform()
+        modality_config = data_config.modality_config()  # 输入数据的模态定义，如视频、机械臂状态等
+        modality_transform = data_config.transform()  # 数据预处理 pipeline
 
         policy = Gr00tPolicy(
             model_path=args.model_path,
@@ -189,7 +190,7 @@ def main(args: ArgsConfig):
         # - action: action.right_hand: (16, 6)
         # - action: action.waist: (16, 3)
         obs = {
-            "video.ego_view": np.random.randint(0, 256, (1, 256, 256, 3), dtype=np.uint8),
+            "video.ego_view": np.random.randint(0, 256, (1, 256, 256, 3), dtype=np.uint8),  # 随机生成的一帧模拟图像数据；T=1指的是一个时间帧
             "state.left_arm": np.random.rand(1, 7),
             "state.right_arm": np.random.rand(1, 7),
             "state.left_hand": np.random.rand(1, 6),
