@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # 每16步，模型就会用数据集中的observation进行一次推理,而不是与环境交互得到obervation
+# 相比inference_service.py, 推理用的数据集是lerobot data,而不是随机observation; 这个脚本还多了画图；可以本地本地加载
 
 import warnings
 from dataclasses import dataclass, field
@@ -99,7 +100,7 @@ def main(args: ArgsConfig):
         import torch
 
         modality_config = data_config.modality_config()
-        modality_transform = data_config.transform()
+        modality_transform = data_config.transform()  
 
         policy: BasePolicy = Gr00tPolicy(
             model_path=args.model_path,
@@ -110,7 +111,7 @@ def main(args: ArgsConfig):
             device="cuda" if torch.cuda.is_available() else "cpu",
         )
     else:
-        policy: BasePolicy = RobotInferenceClient(host=args.host, port=args.port)
+        policy: BasePolicy = RobotInferenceClient(host=args.host, port=args.port) # # 远程连接服务端
 
     # Get the supported modalities for the policy
     modality = policy.get_modality_config()
